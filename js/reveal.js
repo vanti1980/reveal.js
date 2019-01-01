@@ -280,7 +280,10 @@
 
 		// Throttles mouse wheel navigation
 		lastMouseWheelStep = 0,
-
+	
+		// Timer ID for scroll prevention
+		scrollPreventionTimer,
+		
 		// Delays updates to the URL due to a Chrome thumbnailer bug
 		writeURLTimeout = 0,
 
@@ -396,7 +399,14 @@
 			window.removeEventListener( 'load', removeAddressBar );
 			window.removeEventListener( 'orientationchange', removeAddressBar );
 		}
+		
+		indexh = undefined;
+		indexv = undefined;
 		if (dom.wrapper) {
+			if (scrollPreventionTimer) {
+				clearInterval(scrollPreventionTimer);
+				scrollPreventionTimer = undefined;
+			}
 			dom.wrapper.parentNode.removeChild(dom.wrapper);
 		}
 		dom = {};
@@ -884,7 +894,7 @@
 	 */
 	function setupScrollPrevention() {
 
-		setInterval( function() {
+		scrollPreventionTimer = setInterval( function() {
 			if( dom.wrapper.scrollTop !== 0 || dom.wrapper.scrollLeft !== 0 ) {
 				dom.wrapper.scrollTop = 0;
 				dom.wrapper.scrollLeft = 0;
