@@ -35,7 +35,7 @@
 		UA = navigator.userAgent,
 
 		// Configuration defaults, can be overridden at initialization time
-		config = {
+		configDefault = {
 
 			// The "normal" size of the presentation, aspect ratio will be preserved
 			// when the presentation is scaled to fit different resolutions
@@ -225,6 +225,8 @@
 
 		},
 
+		config = {},
+		
 		// Flags if Reveal.initialize() has been called
 		initialized = false,
 
@@ -371,6 +373,7 @@
 		if( typeof query['dependencies'] !== 'undefined' ) delete query['dependencies'];
 
 		// Copy options over to our config object
+		extend( config, configDefault );
 		extend( config, options );
 		extend( config, query );
 
@@ -382,6 +385,26 @@
 
 	}
 
+	/**
+	 * Returns client into non-initialized state and WARNING! destroys the slides themselves as well WARNING!
+	 * (as many DOM nodes are modified which cannot be rolled back)
+	 */
+	function destroy () {
+		window.removeEventListener( 'load', layout );
+		if( config.hideAddressBar && isMobileDevice ) {
+			// Events that should trigger the address bar to hide
+			window.removeEventListener( 'load', removeAddressBar );
+			window.removeEventListener( 'orientationchange', removeAddressBar );
+		}
+		if (dom.wrapper) {
+			document.wrapper.parentNode.removeChild(dom.wrapper);
+		}
+		dom = {};
+		features = {};
+		initialized = false;
+		config = {};
+	}
+	
 	/**
 	 * Inspect the client to see what it's capable of, this
 	 * should only happens once per runtime.
