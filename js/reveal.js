@@ -5395,6 +5395,7 @@
 		VERSION: VERSION,
 
 		initialize: initialize,
+		destroy: destroy,
 		configure: configure,
 
 		sync: sync,
