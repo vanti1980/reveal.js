@@ -389,7 +389,7 @@
 	 * Returns client into non-initialized state and WARNING! destroys the slides themselves as well WARNING!
 	 * (as many DOM nodes are modified which cannot be rolled back)
 	 */
-	function destroy () {
+	function destroy() {
 		window.removeEventListener( 'load', layout );
 		if( config.hideAddressBar && isMobileDevice ) {
 			// Events that should trigger the address bar to hide
@@ -397,7 +397,7 @@
 			window.removeEventListener( 'orientationchange', removeAddressBar );
 		}
 		if (dom.wrapper) {
-			document.wrapper.parentNode.removeChild(dom.wrapper);
+			dom.wrapper.parentNode.removeChild(dom.wrapper);
 		}
 		dom = {};
 		features = {};
