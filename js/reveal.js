@@ -221,7 +221,13 @@
 			display: 'block',
 
 			// Script dependencies to load
-			dependencies: []
+			dependencies: [],
+
+			// Custom available routes
+			customAvailableRoutes: null,
+
+			// Custom navigation
+			customNavigate: null,
 
 		},
 
@@ -3618,6 +3624,10 @@
 			down: indexv < verticalSlides.length - 1
 		};
 
+		if (typeof config.customAvailableRoutes === 'function') {
+			routes = config.customAvailableRoutes(routes);
+		}
+
 		// Looped presentations can always be navigated as long as
 		// there are slides available
 		if( config.loop ) {
@@ -4549,8 +4559,11 @@
 
 	function navigateLeft() {
 
+		if (config.customNavigate && typeof config.customNavigate.left === 'function') {
+			config.customNavigate.left( indexh, indexv );
+		}
 		// Reverse for RTL
-		if( config.rtl ) {
+		else if( config.rtl ) {
 			if( ( isOverview() || nextFragment() === false ) && availableRoutes().left ) {
 				slide( indexh + 1 );
 			}
@@ -4566,8 +4579,11 @@
 
 		hasNavigatedRight = true;
 
-		// Reverse for RTL
-		if( config.rtl ) {
+		if (config.customNavigate && typeof config.customNavigate.right === 'function') {
+			config.customNavigate.right( indexh, indexv );
+		}
+	// Reverse for RTL
+		else if( config.rtl ) {
 			if( ( isOverview() || previousFragment() === false ) && availableRoutes().right ) {
 				slide( indexh - 1 );
 			}
@@ -4583,7 +4599,13 @@
 
 		// Prioritize hiding fragments
 		if( ( isOverview() || previousFragment() === false ) && availableRoutes().up ) {
-			slide( indexh, indexv - 1 );
+
+			if (config.customNavigate && typeof config.customNavigate.up === 'function') {
+				config.customNavigate.up( indexh, indexv );
+			}
+			else {
+				slide( indexh, indexv - 1 );
+			}
 		}
 
 	}
@@ -4592,8 +4614,11 @@
 
 		hasNavigatedDown = true;
 
+		if (config.customNavigate && typeof config.customNavigate.down === 'function') {
+			config.customNavigate.down( indexh, indexv );
+		}
 		// Prioritize revealing fragments
-		if( ( isOverview() || nextFragment() === false ) && availableRoutes().down ) {
+		else if( ( isOverview() || nextFragment() === false ) && availableRoutes().down ) {
 			slide( indexh, indexv + 1 );
 		}
 
